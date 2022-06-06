@@ -1,0 +1,14 @@
+name: prioriactions
+title: prioriactions
+username:
+account: prioriactions
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6437915
+bundleId: 5981373
+url: https://prioriactions.shinyapps.io/prioriactions/
+when: 1654508828.49703
+lastSyncTime: 1654508828.49707
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: output_actions.txt|output_benefits.txt|output_log.txt|output_params.txt
