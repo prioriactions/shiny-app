@@ -127,7 +127,7 @@ function(input, output, session) {
   observeEvent(input$range, {
     
     shape <- shape()
-    
+
     leafletProxy("map", data = shape) %>%
       setShapeStyle(layerId = ~id, fillOpacity = input$range, 
                     options = list(group = "Base"))
@@ -689,14 +689,15 @@ function(input, output, session) {
 
     actions_filtered <- actions[actions$solution_name == input$solution_name, ]
     actions_filtered$action <- paste0("action_", actions_filtered$action)
-    actions_filtered <- dcast(actions_filtered[, -1], pu~action, fill = 0, value.var = "solution")
-    
+    actions_filtered <- dcast(actions_filtered[, -1], pu~action, fill = NA, value.var = "solution")
 
     if(NCOL(actions_filtered[,-1]) == 1){
       actions_filtered$total_acts <- actions_filtered[,-1]
     }
     else{
-      actions_filtered$total_acts <- rowSums(actions_filtered[,-1])
+      actions_filtered$total_acts <- rowSums(actions_filtered[,-1], na.rm = TRUE)
+      actions_filtered$total_acts[actions_filtered$total_acts == 0] <- NA
+      
     }
     
     
@@ -971,7 +972,7 @@ function(input, output, session) {
         map <- shape[[1]][[index]]
         index_pu <- which(shape[[1]]$id == p$id)
 
-        if(map[index_pu] == 1){
+        if(!is.na(map[index_pu])){
           
           shinyjs::show("pie_features_sol")
           shinyjs::show("pie_threats_sol")
@@ -1055,6 +1056,8 @@ function(input, output, session) {
         if(sol_data$name[i] == "output_actions.txt"){
           action_data <- data.table::fread(file = sol_data$datapath[i],
                                        data.table = FALSE)
+          
+          action_data$solution[action_data$solution == 0] <- NA
           
           solution_names <- unique(action_data$solution_name)
           action_names <-  unique(paste0("action_", action_data$action))
